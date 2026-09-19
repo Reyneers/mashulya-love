@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для тебя ❤️</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #0d0d12;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        /* =========================
+           БОКОВЫЕ СЛОВА
+        ========================= */
+
+        .side {
+            position: fixed;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 1;
+            opacity: 0.9;
+        }
+
+        .left {
+            left: 0;
+        }
+
+        .right {
+            right: 0;
+        }
+
+        .words {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            text-align: center;
+
+            font-size: 23px;
+            font-weight: bold;
+            line-height: 1.2;
+
+            color: #ff8fb3;
+
+            text-shadow: 0 0 8px rgba(255, 100, 150, 0.25);
+        }
+
+        .special {
+            color: #ff4f8b;
+            font-size: 28px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+
+            text-shadow: 0 0 12px rgba(255, 60, 130, 0.7);
+        }
+
+        .left .words {
+            animation: moveDown 45s linear infinite;
+        }
+
+        .right .words {
+            animation: moveUp 45s linear infinite;
+        }
+
+        @keyframes moveDown {
+            from {
+                transform: translateY(-50%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes moveUp {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-50%);
+            }
+        }
+
+
+        /* =========================
+           ГЛАВНЫЙ ЭКРАН
+        ========================= */
+
+        .content {
+            position: relative;
+            z-index: 5;
+
+            height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            text-align: center;
+
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0 0 20px;
+
+            font-size: 42px;
+
+            color: #ff6f9f;
+
+            text-shadow: 0 0 20px rgba(255, 80, 140, 0.5);
+        }
+
+        .question {
+            font-size: 23px;
+            line-height: 1.5;
+
+            margin-bottom: 25px;
+
+            max-width: 700px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 25px;
+
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            border: none;
+            border-radius: 15px;
+
+            padding: 14px 32px;
+
+            font-size: 18px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        #yesButton {
+            background: #ff5c91;
+            color: white;
+
+            box-shadow: 0 0 20px rgba(255, 92, 145, 0.4);
+        }
+
+        #yesButton:hover {
+            transform: scale(1.08);
+            background: #ff397b;
+        }
+
+        #noButton {
+            background: #33333d;
+            color: white;
+
+            position: relative;
+        }
+
+        .ps {
+            margin-top: 25px;
+
+            font-size: 16px;
+
+            color: #ffb6ca;
+
+            opacity: 0.9;
+
+            font-style: italic;
+
+            text-shadow: 0 0 10px rgba(255, 100, 150, 0.3);
+        }
+
+
+        /* =========================
+           СТРАНИЦА ТЕСТА
+        ========================= */
+
+        #quizPage {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 20;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #24121c 0%,
+                    #0d0d12 65%
+                );
+
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+        }
+
+        .quiz-content {
+            width: min(650px, 95%);
+
+            text-align: center;
+
+            background: rgba(25, 25, 32, 0.95);
+
+            border: 1px solid rgba(255, 105, 150, 0.35);
+
+            border-radius: 25px;
+
+            padding: 40px 25px;
+
+            box-shadow: 0 0 40px rgba(255, 70, 130, 0.15);
+        }
+
+        .quiz-title {
+            font-size: 36px;
+
+            color: #ff709f;
+
+            margin-bottom: 35px;
+
+            font-weight: bold;
+        }
+
+        .question-box {
+            width: 100%;
+        }
+
+        .question-text {
+            font-size: 25px;
+
+            margin-bottom: 25px;
+        }
+
+        .answers {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+        }
+
+        .answer {
+            background: #292932;
+
+            color: white;
+
+            border: 1px solid #454552;
+
+            width: 100%;
+        }
+
+        .answer:hover {
+            background: #ff5c91;
+
+            transform: translateY(-3px);
+        }
+
+
+        /* =========================
+           ОШИБКА ❌
+        ========================= */
+
+        #wrongPopup {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 100;
+
+            justify-content: center;
+            align-items: center;
+
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .wrong-box {
+            background: #24151b;
+
+            border: 2px solid #ff3b3b;
+
+            border-radius: 25px;
+
+            padding: 35px 55px;
+
+            text-align: center;
+
+            box-shadow:
+                0 0 40px rgba(255, 40, 40, 0.5);
+
+            animation: wrongAnimation 0.3s ease;
+        }
+
+        .wrong-cross {
+            font-size: 75px;
+
+            margin-bottom: 10px;
+        }
+
+        .wrong-text {
+            font-size: 25px;
+
+            font-weight: bold;
+
+            color: #ff5c5c;
+        }
+
+        @keyframes wrongAnimation {
+
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+
+        /* =========================
+           ФИНАЛ
+        ========================= */
+
+        #finalPage {
+            display: none;
+        }
+
+        .final-text {
+            font-size: 24px;
+
+            line-height: 1.6;
+
+            color: #ffd5e2;
+
+            margin-bottom: 25px;
+        }
+
+
+        .surprise-button { margin-top: 10px; padding: 15px 32px; border-radius: 30px; background: #ff5c91; color: white; font-size: 19px; font-weight: bold; cursor: pointer; }
+
+        .heart {
+            font-size: 70px;
+
+            animation: heartbeat 1.2s infinite;
+        }
+
+        @keyframes heartbeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+
+        /* =========================
+           ТЕЛЕФОН
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .side {
+                width: 120px;
+            }
+
+            .words {
+                font-size: 15px;
+                gap: 12px;
+            }
+
+            .special {
+                font-size: 18px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .question {
+                font-size: 18px;
+            }
+
+            .buttons {
+                gap: 12px;
+            }
+
+            button {
+                padding: 12px 22px;
+                font-size: 16px;
+            }
+
+            .quiz-title {
+                font-size: 30px;
+            }
+
+            .question-text {
+                font-size: 20px;
+            }
+
+            .answers {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+    <!-- =========================
+         ЛЕВАЯ СТОРОНА
+    ========================= -->
+
+    <div class="side left">
+
+        <div class="words">
+
+            <div class="special">ты самая ❤️</div>
+
+            <div>красивая</div>
+            <div>умная</div>
+            <div>хорошая</div>
+            <div>восхитительная</div>
+            <div>прекрасная</div>
+            <div>пошлая</div>
+            <div>милая</div>
+            <div>изумительная</div>
+            <div>безумная</div>
+            <div>сексуальная</div>
+            <div>великолепная</div>
+            <div>умелая</div>
+            <div>классная</div>
+            <div>талантливая</div>
+            <div>безупречная</div>
+            <div>бесподобная</div>
+            <div>заботливая</div>
+            <div>отпадная</div>
+            <div>юморная</div>
+            <div>ласковая</div>
+            <div>естественная</div>
+            <div>яркая</div>
+            <div>ослепительная</div>
+            <div>очаровательная</div>
+            <div>неповторимая</div>
+            <div>вдохновляющая</div>
+            <div>нежная</div>
+            <div>харизматичная</div>
+            <div>шикарная</div>
+            <div>завораживающая</div>
+            <div>манящая</div>
+            <div>загадочная</div>
+            <div>неотразимая</div>
+            <div>утонченная</div>
+            <div>остроумная</div>
+            <div>уникальная</div>
+            <div>головокружительная</div>
+            <div>стильная</div>
+            <div>добрая</div>
+            <div>уютная</div>
+            <div>грациозная</div>
+            <div>элегантная</div>
+            <div>незабываемая</div>
+            <div>многогранная</div>
+            <div>креативная</div>
+            <div>роскошная</div>
+            <div>феноменальная</div>
+            <div>ценная</div>
+            <div>пронзительная</div>
+            <div>гипнотическая</div>
+
+            <div class="special">ты самая ❤️</div>
+
+            <div>красивая</div>
+            <div>умная</div>
+            <div>милая</div>
+            <div>нежная</div>
+            <div>шикарная</div>
+            <div>неповторимая</div>
+            <div>прекрасная</div>
+            <div>восхитительная</div>
+            <div>незабываемая</div>
+            <div>любимая</div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ПРАВАЯ СТОРОНА
+    ========================= -->
+
+    <div class="side right">
+
+        <div class="words">
+
+            <div class="special">ты самая ❤️</div>
+
+            <div>красивая</div>
+            <div>умная</div>
+            <div>хорошая</div>
+            <div>восхитительная</div>
+            <div>прекрасная</div>
+            <div>пошлая</div>
+            <div>милая</div>
+            <div>изумительная</div>
+            <div>безумная</div>
+            <div>сексуальная</div>
+            <div>великолепная</div>
+            <div>умелая</div>
+            <div>классная</div>
+            <div>талантливая</div>
+            <div>безупречная</div>
+            <div>бесподобная</div>
+            <div>заботливая</div>
+            <div>отпадная</div>
+            <div>юморная</div>
+            <div>ласковая</div>
+            <div>естественная</div>
+            <div>яркая</div>
+            <div>ослепительная</div>
+            <div>очаровательная</div>
+            <div>неповторимая</div>
+            <div>вдохновляющая</div>
+            <div>нежная</div>
+            <div>харизматичная</div>
+            <div>шикарная</div>
+            <div>завораживающая</div>
+            <div>манящая</div>
+            <div>загадочная</div>
+            <div>неотразимая</div>
+            <div>утонченная</div>
+            <div>остроумная</div>
+            <div>уникальная</div>
+            <div>головокружительная</div>
+            <div>стильная</div>
+            <div>добрая</div>
+            <div>уютная</div>
+            <div>грациозная</div>
+            <div>элегантная</div>
+            <div>незабываемая</div>
+            <div>многогранная</div>
+            <div>креативная</div>
+            <div>роскошная</div>
+            <div>феноменальная</div>
+            <div>ценная</div>
+            <div>пронзительная</div>
+            <div>гипнотическая</div>
+
+            <div class="special">ты самая ❤️</div>
+
+            <div>милая</div>
+            <div>красивая</div>
+            <div>нежная</div>
+            <div>умная</div>
+            <div>шикарная</div>
+            <div>восхитительная</div>
+            <div>прекрасная</div>
+            <div>любимая</div>
+            <div>уникальная</div>
+            <div>незабываемая</div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ГЛАВНЫЙ ЭКРАН
+    ========================= -->
+
+    <div class="content">
+
+        <h1>
+            Поздравляю с нашей полу-годовщиной ❤️
+        </h1>
+
+        <div class="question">
+
+            Хочешь ли ты пройти мини тест
+            <br>
+            на знания меня? 
+
+        </div>
+
+        <div class="buttons">
+
+            <button id="yesButton" onclick="startQuiz()">
+                Да ❤️
+            </button>
+
+            <button id="noButton">
+                Нет 
+            </button>
+
+        </div>
+
+        <div class="ps">
+            P.s. если ответишь правильно — в конце будет сюрприз 🎁
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ТЕСТ
+    ========================= -->
+
+    <div id="quizPage">
+
+        <div class="quiz-content">
+
+            <div class="quiz-title">
+                Тест на знание меня)
+            </div>
+
+
+            <!-- ВОПРОС 1 -->
+
+            <div id="question1" class="question-box">
+
+                <div class="question-text">
+                    Какой мой любимый цвет? 
+                </div>
+
+                <div class="answers">
+
+                    <!-- ТУТ НАСТРАИВАЙ ПРАВИЛЬНЫЙ ОТВЕТ -->
+
+                    <button class="answer" onclick="nextQuestion()">
+                        Чёрный
+                    </button>
+
+                    <button class="answer" onclick="wrongAnswer()">
+                        Красный
+                    </button>
+
+                    <button class="answer" onclick="wrongAnswer()">
+                        Синий
+                    </button>
+
+                    <button class="answer" onclick="wrongAnswer()">
+                        Зелёный
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ВОПРОС 2 -->
+
+            <div id="question2" class="question-box" style="display: none;">
+
+                <div class="question-text">
+                    Какой мой любимый монстр?
+                </div>
+
+                <div class="answers">
+
+                    <!-- МЕНЯЙ wrongAnswer() НА nextQuestion()
+                         У ПРАВИЛЬНОГО ВАРИАНТА -->
+
+                    <button class="answer" onclick="wrongAnswer()">
+                        Голубой с манго
+                    </button>
+
+                    <button class="answer" onclick="nextQuestion()">
+                        Черный без сахара
+                    </button>
+
+                    <button class="answer" onclick="wrongAnswer()">
+                        Белый без сахара
+                    </button>
+
+                    <button class="answer" onclick="wrongAnswer()">
+                        Черный с сахаром
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ВОПРОС 3 -->
+
+            <div id="question3" class="question-box" style="display: none;">
+
+                <div class="question-text">
+                    Какая моя любимая игра?
+                </div>
+
+                <div class="answers">
+
+                    <button class="answer" onclick="wrongAnswer()">
+                        Дота 2
+                    </button>
+
+                    <button class="answer" onclick="wrongAnswer()">
+                        Ксго
+                    </button>
+
+                    <button class="answer" onclick="wrongAnswer()">
+                        DaysGone
+                    </button>
+
+                    <button class="answer" onclick="nextQuestion()">
+                        Mortal Kombat
+
+                </div>
+
+            </div>
+
+
+            <!-- ВОПРОС 4 -->
+
+            <div id="question4" class="question-box" style="display: none;">
+                <div class="question-text">Какой мой любимый персонаж из дота 2?</div>
+                <div class="answers">
+                    <button class="answer" onclick="wrongAnswer()">Huskar</button>
+                    <button class="answer" onclick="nextQuestion()">Sand King</button>
+                    <button class="answer" onclick="wrongAnswer()">Morphe</button>
+                    <button class="answer" onclick="wrongAnswer()">Sven</button>
+                </div>
+            </div>
+
+            <!-- ВОПРОС 5 -->
+
+            <div id="question5" class="question-box" style="display: none;">
+                <div class="question-text">Когда мы познакомились?</div>
+                <div class="answers">
+                    <button class="answer" onclick="wrongAnswer()">13 марта</button>
+                    <button class="answer" onclick="wrongAnswer()">21 марта</button>
+                    <button class="answer" onclick="finishQuiz()">12 марта</button>
+                    <button class="answer" onclick="wrongAnswer()">5 марта</button>
+                </div>
+            </div>
+
+
+            <!-- ФИНАЛ -->
+
+            <div id="finalPage">
+
+                <div class="heart">
+                    ❤️
+                </div>
+
+                <div class="final-text">
+
+                    Спасибо, что прошла мой тест 🥰
+
+                    <br><br>
+
+                    Все ответы правильные!
+                    <br>
+
+                    А теперь твой сюрприз... 🎁
+
+                </div>
+
+                <button class="surprise-button" onclick="openSurprise()">Нажми на меня 🎁</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ОКНО ❌
+    ========================= -->
+
+    <div id="wrongPopup">
+
+        <div class="wrong-box">
+
+            <div class="wrong-cross">
+                ❌
+            </div>
+
+            <div class="wrong-text">
+                Неправильно
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* =========================
+           КНОПКА "НЕТ"
+        ========================= */
+
+        const noButton =
+            document.getElementById("noButton");
+
+        noButton.addEventListener("mouseenter", function () {
+
+            const maxX =
+                window.innerWidth -
+                noButton.offsetWidth -
+                20;
+
+            const maxY =
+                window.innerHeight -
+                noButton.offsetHeight -
+                20;
+
+            const randomX =
+                Math.random() * maxX;
+
+            const randomY =
+                Math.random() * maxY;
+
+            noButton.style.position = "fixed";
+
+            noButton.style.left =
+                randomX + "px";
+
+            noButton.style.top =
+                randomY + "px";
+
+        });
+
+
+        /* =========================
+           НАЖАТИЕ "ДА"
+        ========================= */
+
+        function startQuiz() {
+
+            document.querySelector(".content")
+                .style.display = "none";
+
+            document.getElementById("quizPage")
+                .style.display = "flex";
+
+        }
+
+
+        /* =========================
+           НЕПРАВИЛЬНЫЙ ОТВЕТ ❌
+        ========================= */
+
+        function wrongAnswer() {
+
+            const popup =
+                document.getElementById("wrongPopup");
+
+            popup.style.display = "flex";
+
+            setTimeout(function () {
+
+                popup.style.display = "none";
+
+            }, 1200);
+
+        }
+
+
+        /* =========================
+           СЛЕДУЮЩИЙ ВОПРОС
+        ========================= */
+
+        function nextQuestion() {
+
+            const q1 = document.getElementById("question1");
+            const q2 = document.getElementById("question2");
+            const q3 = document.getElementById("question3");
+            const q4 = document.getElementById("question4");
+            const q5 = document.getElementById("question5");
+
+            if (q1.style.display !== "none") { q1.style.display = "none"; q2.style.display = "block"; }
+            else if (q2.style.display !== "none") { q2.style.display = "none"; q3.style.display = "block"; }
+            else if (q3.style.display !== "none") { q3.style.display = "none"; q4.style.display = "block"; }
+            else if (q4.style.display !== "none") { q4.style.display = "none"; q5.style.display = "block"; }
+        }
+
+        /* =========================
+           ФИНАЛ
+        ========================= */
+
+        function openSurprise() {
+            window.location.href = "https://youtu.be/QxtFyvMKPmE";
+        }
+
+        function finishQuiz() {
+
+            document.getElementById("question3")
+                .style.display = "none";
+
+            document.getElementById("finalPage")
+                .style.display = "block";
+
+        }
+
+    </script>
+
+</body>
+</html>
